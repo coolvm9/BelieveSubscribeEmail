@@ -47,9 +47,15 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         APIGatewayProxyResponseEvent response = new APIGatewayProxyResponseEvent()
                 .withHeaders(headers);
         try {
-            String output = "{ Success }";
             initDynamoDbClient();
             user = gson.fromJson(input.getBody(), User.class);
+            String output = "{\n" +
+                    "  \"status\": \"success\",\n" +
+                    "  \"data\": {\n" +
+                    "    User Details Updated for /* \""+user.getEmailId()+". */\"\n" +
+                    "  },\n" +
+                    "  \"message\": \"/* Email Added to Subscription List */\"\n" +
+                    "}";
             if (user != null) {
                 persistData(user);
             }
@@ -59,7 +65,11 @@ public class App implements RequestHandler<APIGatewayProxyRequestEvent, APIGatew
         } catch (Exception e) {
             logger.log("Error : " + e.getMessage());
             return response
-                    .withBody("{error  "+e.getMessage()+"}")
+                    .withBody("{\n" +
+                            "  \"status\": \"error\",\n" +
+                            "  \"data\": null, /* "+e.getMessage()+" */\n" +
+                            "  \"message\": \"Error xyz has occurred\"\n" +
+                            "}")
                     .withStatusCode(500);
         }
     }
