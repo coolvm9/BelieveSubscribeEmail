@@ -1,23 +1,23 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  BelieveSubscribeEmail
-
+  BelieveAPI
   Sample SAM Template for BelieveSubscribeEmail
-
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 20
-
 Resources:
   SubscribeEmailFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: SubscribeEmailFunction
-      Handler: believe.App::handleRequest
+      Handler: believe.UserData::handleRequest
       Runtime: java8
       MemorySize: 512
+      Policies:
+        # Give the Lambda service access to poll your DynamoDB Stream
+        - AmazonDynamoDBFullAccess
       Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
         Variables:
           PARAM1: VALUE
@@ -27,13 +27,31 @@ Resources:
           Properties:
             Path: /subscribe
             Method: post
-
+  StyleQuizFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: SubscribeEmailFunction
+      Handler: believe.StyleQuiz::handleRequest
+      Runtime: java8
+      MemorySize: 512
+      Policies:
+        # Give the Lambda service access to poll your DynamoDB Stream
+        - AmazonDynamoDBFullAccess
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          PARAM1: VALUE
+      Events:
+        SubbscribeEmail:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /stylequiz
+            Method: post
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   BelieveApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Description: "API Gateway endpoint URL for Prod stage for Subscribe function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/subscribe/"
   SubscribeEmailFunction:
     Description: "Subscribe EmailFunction  ARN"

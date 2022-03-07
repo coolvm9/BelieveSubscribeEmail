@@ -1,5 +1,5 @@
 {
-    "body": "{\"emailId\": \"test@Test.com\", \"firstName\": \"John\", \"lastName\": \"doe\" ,\"subscribe\": \"true\"}",
+    "body": "{\"userName\": \"TestTest\", \"firstName\": \"John\", \"lastName\": \"doe\" ,\"emailId\": \"test@cnn.com\",\"subscribe\": \"true\"}",
     "resource": "/{proxy+}",
     "path": "/path/to/resource",
     "httpMethod": "POST",
